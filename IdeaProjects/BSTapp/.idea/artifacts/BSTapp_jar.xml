@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BSTapp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BSTapp_jar</output-path>
+    <root id="archive" name="BSTapp.jar">
+      <element id="module-output" name="BSTapp" />
+    </root>
+  </artifact>
+</component>

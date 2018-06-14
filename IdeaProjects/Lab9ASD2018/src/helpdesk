@@ -1,0 +1,40 @@
+        int i=1,val;
+        while(array[index] != null){
+            val = (int) (Math.pow((-1), i-1) * Math.pow((i+1)/2,2));
+            index += val;
+            index %= size;
+        }
+        return index;
+
+
+                /*
+
+                Student s1 = new Student("1","qwe","qwe",4);
+                Student s2 = new Student("2","asd","asd",4);
+                Student s3 = new Student("3","zxc","zxc",4);
+                Student s4 = new Student("4","rty","rty",4);
+
+                studs.put(s1.surname,s1,true);
+                studs.put(s2.surname,s2,true);
+                studs.put(s3.surname,s3,true);
+                studs.put(s4.surname,s4,true);
+
+                studs.dump();
+
+                studs.resize(30);
+
+                studs.dump();
+
+                System.out.println(studs.isEmpty());
+
+                System.out.println("-------------------");
+
+                HashMap studs1 = new HashMap(20);
+
+
+                studs1.put(s1.surname,s1,false);
+                studs1.put(s2.surname,s2,false);
+                studs1.put(s3.surname,s3,false);
+                studs1.put(s4.surname,s4,false);
+
+                studs.dump();  */

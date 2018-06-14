@@ -1,0 +1,222 @@
+        for(int i = 0; i < 10; i++){       //rand 10 amounts of pages for process
+
+            int r = rand.nextInt(AMOUNT_OF_PAGES-1) +1;
+            Integer rr = new Integer(r);
+
+
+            while( temp.contains(rr) ){
+                r = rand.nextInt(AMOUNT_OF_PAGES-1) +1;
+                rr = new Integer(r);
+            }
+
+            temp.add(r);
+        }
+
+        Collections.sort(temp);
+
+        for(Integer i: temp){
+            System.out.print(i+", ");
+        }
+
+        int val = 0;
+        int var;
+        int am;
+        int sum = 0;
+
+
+        for(int i = 0; i < 10; i++){
+
+            var = temp.get(i);
+            am = 0;
+
+
+            if(i == 0){
+                am = var;
+            }
+
+            if( i != 0){
+                am = var - val;
+            }
+
+            for(Page pagee: pages){
+                System.out.println("vm-- "+pagee);
+
+            }
+
+            proc = new Proces( i, am,val,var,pages);
+            process.add(proc);
+            val = var;
+
+            sum += am;
+
+
+
+
+        }
+
+        System.out.println("sum"+sum);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+           if( FoultsCheck(st,process,ram,FramesPerProc) ){
+
+
+
+                int increase = MaxPF(st,process,ram);
+                int decrease = MinPF(st,process,ram);
+                //System.out.println("::::::::Increase: "+increase +" RAM frames: "+ram.get(increase).AMOUNT_OF_FRAMES  + " decrease: "+decrease + " RAM frames: "+ ram.get(decrease).AMOUNT_OF_FRAMES);
+                int nin;
+
+
+                if(ram.get(decrease).AMOUNT_OF_FRAMES < 2){
+
+                    if(AMOUNT_OF_FRAMES > TOTAL_FRAMES){
+                        ram.get(increase).increaseAOF();
+                        System.out.println("...:::Increase "+ increase + " using total frames");
+                        TOTAL_FRAMES++;
+                    }
+
+                    else{
+
+                        nin = rand.nextInt(10);
+
+                        while(nin == decrease || nin == increase || (ram.get(nin).AMOUNT_OF_FRAMES < 2) ){
+                            nin = rand.nextInt(10);
+                        }
+                        System.out.println("...:::Increase "+ increase + " using random");
+                        ram.get(increase).increaseAOF();
+                        ram.get(nin).decreaseAOF();
+
+                    }
+
+                }
+
+                if(ram.get(decrease).AMOUNT_OF_FRAMES > 1 && increase != decrease){
+
+                    ram.get(increase).increaseAOF();
+                    ram.get(decrease).decreaseAOF();
+
+                    System.out.println("::::::::Increase: "+increase +" RAM frames: "+ram.get(increase).AMOUNT_OF_FRAMES  + " decrease: "+decrease + " RAM frames: "+ ram.get(decrease).AMOUNT_OF_FRAMES);
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         // WORKING SET
+
+        boolean flag = true;
+
+        while(ignored.size() > 0 || flag ){
+            flag = false;
+
+            while( !isDone2(process,ignored) ){
+
+                index = rand.nextInt(10);
+
+                while( ignored.contains(index)){
+                    index = rand.nextInt(10);
+                }
+
+
+                while( !process.get(index).hasNext() ){
+                    index = rand.nextInt(10);
+                }
+
+                current = process.get(index);
+
+
+                ram.get(index).LRU(current.next(), st.get(index));
+
+            }
+
+            if(ignored.size() > 0){
+
+                //System.out.println("Removing from ignores: "+ignored.get(0) +"  size: " + ws.array.get(ignored.get(0)).size());
+
+                ignored.remove(0);
+            }
+
+        }
+
+
+        // WORKING  SET CLASS
+
+l = (process.get(i).AMOUNT_OF_PAGES / 3) + 1;
+
+            int j = 0;
+            int ix = 0;
+
+            while( j < l ){
+
+
+
+                while( array.get(i).contains(process.get(i).calls.get(ix)) ){
+
+                    ix ++;
+
+                    if( ix >= process.get(i).calls.size() ){
+                        j = l;
+                        break;
+                    }
+
+                }
+
+                if(j == l){
+                    break;
+                }
+
+                array.get(i).add( process.get(i).calls.get(ix) );
+                l++;
+
+            //SET FRAMES
+
+        for(int i = 0; i < 10; i++){
+
+
+
+            if(ws.array.get(i).size() > AMOUNT_OF_FRAMES){
+
+                ram.get(i).setFrames(AMOUNT_OF_FRAMES);
+            }
+
+            else{
+                ram.get(i).setFrames(ws.array.get(i).size());
+            }
+
+        }

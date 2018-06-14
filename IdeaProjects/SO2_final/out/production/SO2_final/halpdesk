@@ -1,0 +1,287 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+public class Disc implements Runnable {
+
+    List<Unit> queue = new ArrayList<Unit>();
+
+    Random rand = new Random();
+    int LOTTERY;
+    private int CHANCE = 10;   //Chance for taking EDF algorithm, if bigger then smaller CHANCE
+
+    public Disc(){
+
+        Random rand = new Random();
+
+        for(int i=0; i < Main.MAX_UNITS; i++){
+            queue.add(new Unit(rand.nextInt(Main.MAX_BLOCKS),rand.nextInt(Main.MAX_DEADLINE)));
+        }
+
+    }
+
+    public int FCFS(){
+        int TOTAL = 0;
+        int next = 1;
+        Unit arg,current;
+        current = queue.get(0);
+        int i=0;
+
+
+        while(!AllDone(queue)){
+
+            while(queue.get(next).isDone()){
+
+                if(next == queue.size()-1){
+                    next = 0;
+                }
+
+                next++;
+            }
+
+
+            TOTAL += Math.abs(queue.get(i).getBlock() - queue.get(next).getBlock());
+            queue.get(i).setDone(true);
+
+            LOTTERY = rand.nextInt(CHANCE);
+
+            if(LOTTERY == 1){
+
+                arg = NextShortestDeadline(queue.get(i));
+
+                TOTAL += Math.abs(queue.get(i).getBlock() - arg.getBlock());
+                queue.get(i).setDone(true);
+                next = queue.indexOf(arg);
+
+
+            }
+
+            i=next;
+
+        }
+
+        Restart();
+        return TOTAL;
+    }
+
+    public int SSTF(){
+
+        int TOTAL = 0;
+        Unit NEXT,current;
+        current = queue.get(0);
+
+        while(!AllDone(queue)){
+
+            NEXT = NextShortestSeek(current);
+
+            TOTAL += Math.abs(current.getBlock() - NEXT.getBlock());
+            current.setDone(true);
+            current = NEXT;
+
+            LOTTERY = rand.nextInt(CHANCE);
+
+            if(LOTTERY == 1){
+
+                NEXT = NextShortestDeadline(current);
+
+                TOTAL += Math.abs(current.getBlock() - NEXT.getBlock());
+                current.setDone(true);
+
+            }
+
+        }
+
+        Restart();
+        return TOTAL;
+
+    }
+
+    public int SCAN() throws InterruptedException {
+
+        int TOTAL = 0,i,j;
+        Unit NEXT,current,LAST;
+        current = queue.get(0);
+        boolean flag = true;
+
+        ArrayList<Unit> SCANqueue = new ArrayList<>(queue);
+
+        Collections.sort(SCANqueue);
+
+        i = SCANqueue.indexOf(current);
+
+
+        if(current.getBlock() < Main.MAX_BLOCKS/2){
+            flag = false;
+        }
+
+        if(current.getBlock() >= Main.MAX_BLOCKS/2){
+            flag = true;
+        }
+
+        LAST = current;
+
+        if(i <= queue.size()-2){
+            current = SCANqueue.get(++i);
+        }
+
+        if(i == queue.size()-1){
+            current = SCANqueue.get(--i);
+        }
+
+
+        while(!AllDone(SCANqueue)){
+
+            TOTAL += Math.abs(current.getBlock() - LAST.getBlock());
+            LAST = current;
+            LAST.setDone(true);
+
+
+            if(flag){
+
+
+                while((i < queue.size()-1) && (!SCANqueue.get(i+1).isDone())){
+                    i++;
+                    System.out.print("  FLAG ");
+                }
+
+                current = SCANqueue.get(i);
+
+            }
+
+            if(!flag){
+
+
+
+                while((i > 0) && (!SCANqueue.get(i-1).isDone())){
+                    System.out.print("  NOTFLAG ");
+                    i--;
+                }
+
+                current = SCANqueue.get(i);
+
+
+            }
+
+
+            if(i == queue.size()-1){
+                flag = false;
+            }
+
+            if(i == 0){
+                flag = true;
+            }
+
+        }
+
+
+        return TOTAL;
+
+
+    }
+
+
+
+    public Unit NextShortestSeek(Unit current){
+
+        int MIN_PATH = Main.MAX_BLOCKS;
+        Unit NEXT_BLOCK = current;
+
+        for(int i = 0; i < queue.size(); i++){
+
+            if((Math.abs(current.getBlock() - queue.get(i).getBlock()) < MIN_PATH) && (!queue.get(i).isDone()) && (current != queue.get(i))){
+                MIN_PATH = Math.abs(current.getBlock() - queue.get(i).getBlock());
+                NEXT_BLOCK = queue.get(i);
+            }
+
+        }
+
+        return NEXT_BLOCK;
+    }
+
+    public Unit NextShortestDeadline(Unit current){
+
+        int MIN_DEADLINE = Main.MAX_DEADLINE;
+        Unit NEXT_BLOCK = current;
+
+        for(int i = 0; i < queue.size(); i++){
+
+            if((Math.abs(current.getDeadline() - queue.get(i).getDeadline()) < MIN_DEADLINE) && (!queue.get(i).isDone()) && (current != queue.get(i))){
+                MIN_DEADLINE = Math.abs(current.getDeadline() - queue.get(i).getDeadline());
+                NEXT_BLOCK = queue.get(i);
+            }
+
+        }
+
+        return NEXT_BLOCK;
+    }
+
+    public boolean AllDone(List<Unit> queue){
+
+        for(int i=0; i < queue.size(); i++){
+            if(!queue.get(i).isDone())
+                return false;
+        }
+        return true;
+
+    }
+
+    public void Restart(){
+        for(int i = 0; i < queue.size(); i++){
+            queue.get(i).setDone(false);
+        }
+    }
+
+
+    @Override
+    public void run() {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        while(SCANqueue.size()>1){
+
+            current = SCANqueue.get(i);
+
+
+            if(i == 0){
+
+                flag = true;
+
+            }
+
+            if(i == SCANqueue.size()-1){
+
+                flag = false;
+
+            }
+
+            if(flag){
+                i++;
+            }
+
+            if(!flag){
+                i--;
+            }
+
+
+
+            TOTAL += Math.abs(current.getBlock() - LAST.getBlock());
+            SCANqueue.remove(LAST);
+            LAST = current;
+
+
+        }
